@@ -1,3 +1,12 @@
+#!/usr/bin/env
+#
+# Task 04: Develop a program that does a
+# bruteforce attack to find the password
+# of a password protected ZIP file.
+#
+# Group: Alex Silva Torres, RA 161939
+#        Hilder Vitor Lima Pereira, RA 161440
+
 import zipfile
 import optparse
 
