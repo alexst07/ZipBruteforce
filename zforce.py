@@ -1,11 +1,11 @@
-#!/usr/bin/env
+#!/usr/bin/env python
 #
 # Task 04: Develop a program that does a
 # bruteforce attack to find the password
 # of a password protected ZIP file.
 #
-# Group: Alex Silva Torres, RA 161939
-#        Hilder Vitor Lima Pereira, RA 161440
+# Authors: Alex Silva Torres, RA 161939
+#          Hilder Vitor Lima Pereira, RA 161440
 
 import zipfile
 import optparse
@@ -67,6 +67,9 @@ def main():
                  dest="zip_file")
 
     options, arguments = p.parse_args()
+
+    if not options.list_file or not options.zip_file:
+        return
 
     find_password(options.list_file, options.zip_file)
 
