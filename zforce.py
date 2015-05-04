@@ -61,9 +61,9 @@ def find_password(list_file, zip_file):
 
 def main():
     p = optparse.OptionParser()
-    p.add_option('-l', help="Person is required",
+    p.add_option('-l', help="Filename of the dictionary is required",
                  dest="list_file")
-    p.add_option('-f', help="Person is required",
+    p.add_option('-f', help="Filename of the zip is required",
                  dest="zip_file")
 
     options, arguments = p.parse_args()
