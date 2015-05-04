@@ -57,15 +57,20 @@ def find_password(list_file, zip_file):
 
 
 def main():
-    p = optparse.OptionParser()
+    p = optparse.OptionParser("usage: %prog -l <dic name> -f <zip name> [-m <integer>]")
     p.add_option('-l', help="Filename of the dictionary is required",
                  dest="list_file")
     p.add_option('-f', help="Filename of the zip is required",
                  dest="zip_file")
+    p.add_option('-m', help="Mode of operation should be a integer:      0 -> default: just try the words in the file (fast)   1 -> try some variations of the words    2 -> try several variations and combinations of the words (expensive) ",
+	             type="int",
+                 dest="mode")
+
 
     options, arguments = p.parse_args()
 
     if not options.list_file or not options.zip_file:
+        p.print_usage()
         return
 
     find_password(options.list_file, options.zip_file)
