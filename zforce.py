@@ -33,11 +33,20 @@ def bf_extract(zfile, password):
 
     return res
  
-def find_password(list_file, zip_file):
+def find_password(list_file, zip_file, mode):
+    found = find_password_simple(list_file, zip_file)
+    if not found and mode > 0:
+        found = find_password_with_variations(list_file, zip_file)
+    if not found and mode > 1:
+        find_password_with_combinations(list_file, zip_file)
+
+words = []
+
+def find_password_simple(list_file, zip_file):
     try:
         file = open(list_file)
-
-        while True:
+        found = False
+        while not found:
             line = file.readline()
             line = line[:-1]
 
@@ -45,16 +54,55 @@ def find_password(list_file, zip_file):
                 break
 
             try:
+                words.append(line)
                 if bf_extract(zip_file, line):
                     print "The password is " + line
-                    break
+                    found = True
 
             except InvalidZip:
                 break
+        return found
 
     except IOError:
-        return
+        return False
 
+def find_password_with_variations (list_file, zip_file):
+    variations = []
+    for word in words:
+        # try all letters in uppercase
+        if not word.isupper():
+            up = word.upper()
+            words.append(up)
+            if bf_extract(zip_file, up):
+                print "The password is " + up
+                return True
+        # try all letters in lower
+        if not word.islower():
+            lower = word.lower()
+            words.append(lower)
+            if bf_extract(zip_file, lower):
+                print "The password is " + lower
+                return True
+        # try first letters uppercase
+        if not word.istitle():
+            title = word.title()
+            words.append(title)
+            if bf_extract(zip_file, title):
+                print "The password is " + title
+                return True
+        # try replace some chars (for example: teste --> t3st3)
+        words.append(word.replace("o", "0").replace("A", "4").replace("l", "1").replace("e", "3").replace("E", "3"))
+        r = words[-1]
+        if bf_extract(zip_file, r):
+            print "The password is " + r
+            return True
+
+    return False
+
+
+def find_password_with_combinations (list_file, zip_file):
+    print "combinations"
+    return False
 
 def main():
     p = optparse.OptionParser("usage: %prog -l <dic name> -f <zip name> [-m <integer>]")
@@ -72,8 +120,14 @@ def main():
     if not options.list_file or not options.zip_file:
         p.print_usage()
         return
+    if not options.mode:
+        options.mode = 0
 
-    find_password(options.list_file, options.zip_file)
+    if options.mode < 0 or options.mode >= 3:
+        print "Unknown mode %d. Using default (0)." % int(options.mode)
+        options.mode = 0
+
+    find_password(options.list_file, options.zip_file, options.mode)
 
 if __name__ == "__main__":
     main()
