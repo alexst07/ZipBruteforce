@@ -31,11 +31,8 @@ def bf_extract(zfile, password):
     else:
         raise InvalidZip("invalid zip file: " + zfile)
 
-    if res:
-        return True
-    else:
-        return False
-
+    return res
+ 
 def find_password(list_file, zip_file):
     try:
         file = open(list_file)
@@ -72,7 +69,6 @@ def main():
         return
 
     find_password(options.list_file, options.zip_file)
-
 
 if __name__ == "__main__":
     main()
