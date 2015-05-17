@@ -56,15 +56,15 @@ def try_word(word, zip_file):
         return False
 
 
-def find_password(list_file, zip_file):
+def find_password(list_file, zip_file, mode):
     words = list_words(list_file)
 
     if words:
-        found = find_password_simple(words, zip_file)
-
-        if not found:
-            found = find_password_with_variations(words, zip_file)
-        if not found:
+        if mode == 0:
+            find_password_simple(words, zip_file)
+        elif mode == 1:
+            find_password_with_variations(words, zip_file)
+        elif mode == 2:
             find_password_with_combinations(words, zip_file)
 
 
@@ -247,11 +247,16 @@ def try_concat_birthdays(list_words, zip_file):
 #       main function
 ##########################
 def main():
-    p = optparse.OptionParser("usage: %prog -l <dic name> -f <zip name> [-m <integer>]")
+    p = optparse.OptionParser("usage: %prog -l <dic name> -f <zip name> [-m <integer>(0, 1, 2)]")
     p.add_option('-l', help="Filename of the dictionary is required",
                  dest="list_file")
     p.add_option('-f', help="Filename of the zip is required",
                  dest="zip_file")
+    p.add_option('-m', help="Mode of operation should be a integer:"+
+                            "0 -> default: just try the words in the file (fast) 1 "+
+                            "-> try some variations of the words 2 "+
+                            "-> try several variations and combinations of the words (expensive) ",
+                    type="int", dest="mode")
 
     options, arguments = p.parse_args()
 
@@ -259,7 +264,11 @@ def main():
         p.print_usage()
         return
 
-    find_password(options.list_file, options.zip_file)
+    if options.mode in range(0,2):
+        find_password(options.list_file, options.zip_file, options.mode)
+    else:
+        p.print_usage()
+        return
 
 
 if __name__ == "__main__":
